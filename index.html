@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Peta Penyakit Hewan di Kabupaten Tuban</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Tambah Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <div id="container">
+    <div id="sidebar">
+      <h2>Peta Penyakit Hewan<br>Kabupaten Tuban</h2>
+      <div id="filters">
+        <label for="filterKecamatan">Kecamatan:</label>
+        <select id="filterKecamatan"><option value="">Semua</option></select>
+        <label for="filterDesa">Desa:</label>
+        <select id="filterDesa"><option value="">Semua</option></select>
+        <label for="filterPenyakit">Penyakit:</label>
+        <select id="filterPenyakit"><option value="">Semua</option></select>
+        <label for="filterTahun">Tahun:</label>
+        <select id="filterTahun"><option value="">Semua</option></select>
+        <label for="filterBulan">Bulan:</label>
+        <select id="filterBulan"><option value="">Semua</option></select>
+      </div>
+      <canvas id="chart"></canvas>
+    </div>
+    <div id="map"></div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
