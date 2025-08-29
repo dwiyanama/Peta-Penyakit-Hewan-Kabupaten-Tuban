@@ -9,8 +9,13 @@ L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
 let markersLayer = L.layerGroup().addTo(map);
 let allData = [];
 
-// Palet warna untuk penyakit
-const colorPalette = ["red","blue","green","orange","purple","brown","black","pink","teal"];
+// Palet warna untuk penyakit (30 warna)
+const colorPalette = [
+  "#e6194b","#3cb44b","#ffe119","#4363d8","#f58231","#911eb4","#46f0f0","#f032e6",
+  "#bcf60c","#fabebe","#008080","#e6beff","#9a6324","#fffac8","#800000","#aaffc3",
+  "#808000","#ffd8b1","#000075","#808080","#a9a9a9","#ff4500","#2e8b57","#1e90ff",
+  "#daa520","#c71585","#20b2aa","#ff6347","#4682b4","#d2691e","#7fff00","#dc143c"
+];
 const colorMap = {};
 function getColorForDisease(disease) {
   if (!colorMap[disease]) {
