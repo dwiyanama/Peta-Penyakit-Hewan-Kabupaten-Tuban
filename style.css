@@ -7,15 +7,21 @@ body, html {
 
 #container {
   display: flex;
-  height: 100%;
+  flex-direction: row;
+  height: calc(100vh - 60px); /* 60px = tinggi footer */
 }
 
 #sidebar {
-  width: 320px;
-  background: #f8f9fa;
-  padding: 10px;
+  background: linear-gradient(135deg, #e0f7fa 0%, #f5f5f5 100%);
+  box-shadow: 2px 0 12px rgba(0,0,0,0.08);
+  border-radius: 0 18px 18px 0;
+  padding: 28px 24px 24px 24px;
+  min-width: 320px;
+  max-width: 360px;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  height: 100%;
+  max-height: 100%;
   overflow-y: auto;
-  border-right: 1px solid #ccc;
 }
 
 #map {
@@ -25,14 +31,21 @@ body, html {
 
 #filters label {
   display: block;
-  margin-top: 8px;
+  margin-top: 12px;
+  margin-bottom: 2px;
+  color: #1976d2;
   font-size: 14px;
+  font-weight: 500;
 }
 
 #filters select {
   width: 100%;
-  padding: 4px;
-  margin-top: 2px;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #bdbdbd;
+  background: #fff;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 h2 {
@@ -43,4 +56,37 @@ h2 {
 .leaflet-popup-content {
   max-height: 200px;
   overflow-y: auto;
+}
+
+#footer-info {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  background: #f8f8f8;
+  color: #444;
+  padding: 12px 0 8px 0;
+  text-align: center;
+  font-size: 15px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+  border-top: 1px solid #e0e0e0;
+  z-index: 1000;
+}
+
+#footer-info .footer-note {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+#chart {
+  width: 100% !important;
+  min-width: 380px;
+  max-width: 100%;
+  display: block;
+  margin-top: 18px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(21,101,192,0.07);
+  padding: 8px;
 }

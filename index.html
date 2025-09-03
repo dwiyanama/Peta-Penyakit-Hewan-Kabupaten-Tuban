@@ -10,6 +10,27 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <!-- Tambah Font Awesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    #footer-info {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100vw;
+  background: #f8f8f8;
+  color: #444;
+  padding: 12px 0 8px 0;
+  text-align: center;
+  font-size: 15px;
+  box-shadow: 0 -2px 8px rgba(0,0,0,0.07);
+  border-top: 1px solid #e0e0e0;
+  z-index: 1000;
+}
+#footer-info .footer-note {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+  </style>
 </head>
 <body>
   <div id="container">
@@ -32,17 +53,17 @@
         <label for="filterBulan">Bulan:</label>
         <select id="filterBulan"><option value="">Semua</option></select>
       </div>
-      <canvas id="chart"></canvas>
+      <canvas id="chart" width="400" height="220"></canvas>
     </div>
     <div id="map"></div>
   </div>
   <script src="script.js"></script>
- <div style="text-align:center; margin-top:24px; font-size:16px; color:#444;">
-    Dibuat oleh Dinas Ketahanan Pangan, Pertanian, dan Perikanan<br>
-    Kabupaten Tuban
-    <div style="font-size:12px; color:#888; margin-top:4px;">
-      *data diambil dan diolah dari laporan kasus petugas lapangan di iSIKHNAS dan akan diperbarui secara berkala
-    </div>
+ <div id="footer-info">
+  Dibuat oleh Dinas Ketahanan Pangan, Pertanian, dan Perikanan<br>
+  Kabupaten Tuban
+  <div class="footer-note">
+    *data diambil dan diolah dari laporan kasus petugas lapangan di iSIKHNAS dan akan diperbarui secara berkala
   </div>
+</div>
 </body>
 </html>

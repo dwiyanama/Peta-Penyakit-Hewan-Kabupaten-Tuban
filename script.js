@@ -39,8 +39,39 @@ function createIcon(disease) {
 let chartCtx = document.getElementById("chart").getContext("2d");
 let chart = new Chart(chartCtx, {
   type: "bar",
-  data: { labels: [], datasets: [{ label: "Jumlah Kasus", data: [], backgroundColor: [] }] },
-  options: { responsive: true, plugins: { legend: { display: false } } }
+  data: {
+    labels: [], // Nama penyakit
+    datasets: [{
+      label: "Jumlah Kasus",
+      data: [],
+      backgroundColor: []
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false }
+    },
+    layout: {
+      padding: { bottom: 30 }
+    },
+    scales: {
+      x: {
+        ticks: {
+          color: "#1565c0",
+          font: { size: 13 },
+          maxRotation: 90,
+          minRotation: 90,
+          align: "center",
+          autoSkip: false, // <-- Penting agar semua label tampil!
+        }
+      },
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
 });
 
 // Load data dari CSV
@@ -138,3 +169,32 @@ function updateMapAndChart() {
   chart.data.datasets[0].backgroundColor = chart.data.labels.map(getColorForDisease);
   chart.update();
 }
+
+// Contoh: load geojson batas Tuban
+fetch('tuban.geojson')
+  .then(res => res.json())
+  .then(geojson => {
+    // Polygon besar (seluruh area peta)
+    const outer = [
+      [ -8.5, 111.0 ],
+      [ -8.5, 113.5 ],
+      [ -6.5, 113.5 ],
+      [ -6.5, 111.0 ],
+      [ -8.5, 111.0 ]
+    ];
+
+    // Ambil koordinat polygon Tuban dari geojson
+    const tubanCoords = geojson.features[0].geometry.coordinates;
+
+    // Buat mask: area luar minus area Tuban
+    const mask = [outer];
+    tubanCoords.forEach(poly => mask.push(poly[0]));
+
+    // Tambahkan polygon mask ke peta
+    L.polygon(mask, {
+      color: "#888",
+      fillColor: "#888",
+      fillOpacity: 0.5,
+      stroke: false
+    }).addTo(map);
+  });
