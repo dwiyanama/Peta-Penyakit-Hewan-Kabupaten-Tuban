@@ -1,5 +1,5 @@
 // URL CSV publik dari Google Sheets
-const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vR9MVSXX7D5_0zFcUAd9UQe-_MLxKazDvplEMgAYNvyPCgB1yzBc6mQ_0w4gEtSRAuOFu9aVyTMK3Ve/pub?output=csv";
+const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT5Rc7mU55Xj1OOPc2961fQVyj13CXscIWVrcfY0jRWnH8jjfCIftMnE4yIzRNVRUOoeIInU3fcPG1N/pub?output=csv";
 
 let map = L.map("map").setView([-7.1, 112.05], 10);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
