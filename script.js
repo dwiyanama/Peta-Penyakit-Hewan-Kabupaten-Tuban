@@ -98,16 +98,31 @@ Papa.parse(CSV_URL, {
 });
 
 function populateFilters() {
-  populateSelect("filterKecamatan", [...new Set(allData.map(d => d.kecamatan).filter(Boolean))]);
-  populateSelect("filterPenyakit", [...new Set(allData.map(d => d.penyakit).filter(Boolean))]);
-  populateSelect("filterTahun", [...new Set(allData.map(d => d.tahun).filter(Boolean))]);
-  populateSelect("filterBulan", [...new Set(allData.map(d => d.bulan).filter(Boolean))]);
+  // Urutkan abjad untuk kecamatan, penyakit, tahun
+  const kecamatanSet = [...new Set(allData.map(d => d.kecamatan).filter(Boolean))].sort();
+  const penyakitSet = [...new Set(allData.map(d => d.penyakit).filter(Boolean))].sort();
+  const tahunSet = [...new Set(allData.map(d => d.tahun).filter(Boolean))].sort();
+
+  populateSelect("filterKecamatan", kecamatanSet);
+  populateSelect("filterPenyakit", penyakitSet);
+  populateSelect("filterTahun", tahunSet);
+
+  // Urutan bulan kalender
+  const bulanKalender = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+  let bulanSet = [...new Set(allData.map(d => d.bulan).filter(Boolean))];
+  bulanSet = bulanKalender.filter(b => bulanSet.includes(b));
+  populateSelect("filterBulan", bulanSet);
 
   document.getElementById("filterKecamatan").addEventListener("change", function() {
     const selectedKecamatan = this.value;
+    // Desa diurutkan abjad
     let desaSet = allData.filter(d => !selectedKecamatan || d.kecamatan === selectedKecamatan)
                          .map(d => d.desa).filter(Boolean);
-    populateSelect("filterDesa", [...new Set(desaSet)]);
+    desaSet = [...new Set(desaSet)].sort();
+    populateSelect("filterDesa", desaSet);
     updateMapAndChart();
   });
   ["filterDesa","filterPenyakit","filterTahun","filterBulan"].forEach(id => {
@@ -118,7 +133,7 @@ function populateFilters() {
 function populateSelect(id, values) {
   const sel = document.getElementById(id);
   sel.innerHTML = "<option value=''>Semua</option>";
-  values.sort().forEach(v => {
+  values.forEach(v => {
     let opt = document.createElement("option");
     opt.value = v;
     opt.textContent = v;
@@ -127,47 +142,67 @@ function populateSelect(id, values) {
 }
 
 function updateMapAndChart() {
-  markersLayer.clearLayers();
-  let fKec = document.getElementById("filterKecamatan").value;
-  let fDesa = document.getElementById("filterDesa").value;
-  let fPenyakit = document.getElementById("filterPenyakit").value;
-  let fTahun = document.getElementById("filterTahun").value;
-  let fBulan = document.getElementById("filterBulan").value;
+  // Ambil filter
+  const kecamatan = document.getElementById("filterKecamatan").value;
+  const desa = document.getElementById("filterDesa").value;
+  const penyakit = document.getElementById("filterPenyakit").value;
+  const tahun = document.getElementById("filterTahun").value;
+  const bulan = document.getElementById("filterBulan").value;
 
+  // Filter data sesuai pilihan
   let filtered = allData.filter(d =>
-    (!fKec || d.kecamatan === fKec) &&
-    (!fDesa || d.desa === fDesa) &&
-    (!fPenyakit || d.penyakit === fPenyakit) &&
-    (!fTahun || d.tahun === fTahun) &&
-    (!fBulan || d.bulan === fBulan)
+    (!kecamatan || d.kecamatan === kecamatan) &&
+    (!desa || d.desa === desa) &&
+    (!penyakit || d.penyakit === penyakit) &&
+    (!tahun || d.tahun === tahun) &&
+    (!bulan || d.bulan === bulan)
   );
 
-  filtered.forEach(p => {
-    if (isNaN(p.lat) || isNaN(p.lng)) return;
-    console.log("Gambar:", p.gambar);
-    let popupContent = `
-      <b>Penyakit:</b> ${p.penyakit}<br>
-      <b>Kecamatan:</b> ${p.kecamatan}<br>
-      <b>Desa:</b> ${p.desa}<br>
-      <b>Jumlah:</b> ${p.jumlah}<br>
-      <b>Tahun/Bulan:</b> ${p.tahun}/${p.bulan}<br>
-      <b>Deskripsi:</b><br>${p.deskripsi}<br>
-      ${p.gambar ? `<img src="${p.gambar}" alt="gambar" style="max-width:100%;margin-top:5px;">` : ""}
-      ${p.kontak ? `<br><b>Kontak:</b> ${p.kontak}` : ""}
-    `;
-    let marker = L.marker([p.lat, p.lng], { icon: createIcon(p.penyakit) }).addTo(markersLayer);
-    marker.bindPopup(popupContent);
-  });
+  // Update chart (sesuai kode kamu sekarang)
+  if (penyakit) {
+    const kecamatanList = [...new Set(filtered.map(d => d.kecamatan).filter(Boolean))].sort();
+    const dataPerKecamatan = kecamatanList.map(kec => {
+      return filtered.filter(d => d.kecamatan === kec)
+                     .reduce((sum, d) => sum + d.jumlah, 0);
+    });
 
-  // Update chart
-  let counts = {};
-  filtered.forEach(p => {
-    counts[p.penyakit] = (counts[p.penyakit] || 0) + p.jumlah;
+    chart.data.labels = kecamatanList;
+    chart.data.datasets[0].data = dataPerKecamatan;
+    chart.data.datasets[0].backgroundColor = kecamatanList.map(() => "#1565c0");
+    chart.data.datasets[0].label = `Jumlah Kasus ${penyakit}`;
+    chart.update();
+  } else {
+    const penyakitList = [...new Set(filtered.map(d => d.penyakit).filter(Boolean))].sort();
+    const dataPerPenyakit = penyakitList.map(p => {
+      return filtered.filter(d => d.penyakit === p)
+                     .reduce((sum, d) => sum + d.jumlah, 0);
+    });
+
+    chart.data.labels = penyakitList;
+    chart.data.datasets[0].data = dataPerPenyakit;
+    chart.data.datasets[0].backgroundColor = penyakitList.map(getColorForDisease);
+    chart.data.datasets[0].label = "Jumlah Kasus";
+    chart.update();
+  }
+
+  // Update marker di peta
+  markersLayer.clearLayers();
+  filtered.forEach(d => {
+    if (!isNaN(d.lat) && !isNaN(d.lng)) {
+      const marker = L.marker([d.lat, d.lng], { icon: createIcon(d.penyakit) });
+      let popupHtml = `<b>${d.penyakit}</b><br>
+        <b>Kecamatan:</b> ${d.kecamatan}<br>
+        <b>Desa:</b> ${d.desa}<br>
+        <b>Jumlah:</b> ${d.jumlah}<br>
+        <b>Tahun:</b> ${d.tahun}<br>
+        <b>Bulan:</b> ${d.bulan}`;
+      if (d.deskripsi) popupHtml += `<br><b>Deskripsi:</b> ${d.deskripsi}`;
+      if (d.gambar) popupHtml += `<br><img src="${d.gambar}" style="max-width:120px;">`;
+      if (d.kontak) popupHtml += `<br><b>Kontak:</b> ${d.kontak}`;
+      marker.bindPopup(popupHtml);
+      markersLayer.addLayer(marker);
+    }
   });
-  chart.data.labels = Object.keys(counts);
-  chart.data.datasets[0].data = Object.values(counts);
-  chart.data.datasets[0].backgroundColor = chart.data.labels.map(getColorForDisease);
-  chart.update();
 }
 
 // Contoh: load geojson batas Tuban
